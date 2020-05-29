@@ -1,14 +1,13 @@
-const MongoClient = require('mongodb').MongoClient
-const url = 'mongodb://127.0.0.1:27017'
+const mongoose = require('mongoose')
+const url = 'mongodb://127.0.0.1:27017/mydb'
 
-const dbName = 'mydb'
-let db
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
-MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
-    if (err) return console.log(err)
-  
-    // Storing a reference to the database so you can use it later
-    db = client.db(dbName)
-    console.log(`Connected MongoDB: ${url}`)
-    console.log(`Database: ${dbName}`)
-  })
+const db = mongoose.connection
+db.once('open', _ => {
+  console.log('Database connected:', url)
+})
+
+db.on('error', err => {
+  console.error('connection error:', err)
+})
